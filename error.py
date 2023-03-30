@@ -19,7 +19,7 @@ class Error():
     def __init__(self, error):
         pass
 
-    # NH: Switcher, figures out what type of error and call interal function    
+    # Switcher, figures out what type of error and calls custom
         
     # Prints error to console
     def throwError(self, error, errorCode=0, message=""):

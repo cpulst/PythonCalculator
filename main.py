@@ -22,13 +22,13 @@
 ## 
 
 # Imports
-from addition import *
-from divide import *
+from modules.math.addition import *
+from modules.math.divide import *
 from error import *
-from power import *
-from multiply import *
-from subtraction import *
-from database import *
+from modules.math.power import *
+from modules.math.multiply import *
+from modules.math.subtraction import *
+from modules.db.database import *
 
 # Main function
 def main():
@@ -51,7 +51,7 @@ def main():
     sub = Subtraction()
     sub.test("I feel bonita...")
     
-    db = Database()
+    db = DBConnect()
     db.test("DB for the win")
     
 main()

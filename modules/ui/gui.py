@@ -13,6 +13,7 @@
 # Imports
 import tkinter as tk
 from guiCreate import *
+from guiEventHandler import *
 
 # Power class
 class GUI:
@@ -22,14 +23,12 @@ class GUI:
     
     def createWindow(self):
         self.window = CreateGui()
-        self.window.createWindow()        
+        self.window.createWindow()
         
-        
-    
     # Test
     def test(self, msg):
         print("GUI Mod", msg)
 
 newGui = GUI()
 newGui.createWindow()
-print(newGui)
+
