@@ -20,13 +20,13 @@ class DBConnect:
         print("connect called")
         self.con = sqlite3.connect("history.db")
         self.cursor = self.con.cursor()
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS History(value1 INT, operator TEXT, value2 INT, result FLOAT);""")
-        print('History table created')
+        self.cursor.execute("CREATE TABLE IF NOT EXISTS History(value1 INT, operator TEXT, value2 INT, result FLOAT);")
+        print("History table created")
         
         return self.con
     
     def deleteTable(self):
-        self.cursor.execute("""DROP TABLE History""")
+        self.cursor.execute("DROP TABLE History")
         return
     
     def createEntry(self, value1, operator, value2, result):

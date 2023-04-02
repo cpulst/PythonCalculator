@@ -222,30 +222,3 @@ class CreateGui:
             # Update UI to default state
             print("reset pressed")
             return
-
-"""     # Button press capture - OLD
-    def buttonPress(self, val):
-        
-        if 0 <= int(val) <= 9:
-            event = Event()
-            event.buttonPress(val,self.textbox)
-        if(val == "clear"):
-            print("clear")
-        if(val == "/"):
-            print("division")
-        if(val == "/"):
-            print("division")
-        if(val == "*"):
-            print("multipy")
-        if(val == "^"):
-            print("power")
-        if(val == "+"):
-            print("addition")
-        if(val == "-"):
-            print("subtraction")
-        print("button pressed",val)
-        return 
-    
-    # Test
-    def test(self, msg):
-        print("GUI create Mod", msg) """

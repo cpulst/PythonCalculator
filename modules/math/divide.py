@@ -15,10 +15,10 @@ class Divide:
     def __init__(self):
         pass
 
-    # Adds two numbers and returns sum
+    # Divides two numbers and returns division
     def divide(self, arg1, arg2):
-        if(arg1 != 0 and arg2 != 0):
-            return arg1 + arg2
+        if(arg2 != 0):
+            return round(arg1 / arg2, 4)
         else:
             return 0
 

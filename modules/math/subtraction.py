@@ -16,8 +16,8 @@ class Subtraction:
         pass
 
     # Subtracts two numbers and returns the difference
-    def add(self, arg1, arg2):
-        return arg1 - arg2
+    def subtract(self, arg1, arg2):
+        return round(arg1 - arg2, 4)
 
     def test(self, phrase):
         print("Test subtraction", phrase)

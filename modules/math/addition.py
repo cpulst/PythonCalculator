@@ -17,7 +17,7 @@ class Addition:
 
     # Adds two numbers and returns sum
     def add(self, arg1, arg2):
-        return arg1 + arg2
+        return round(arg1 + arg2, 4)
 
     def test(self, phrase):
         print("Test", phrase)

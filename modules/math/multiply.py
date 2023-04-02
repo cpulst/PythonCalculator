@@ -15,9 +15,9 @@ class Multiply:
     def __init__(self):
         pass
 
-    # Adds two numbers and returns sum
-    def Multiply(self, arg1, arg2):
-        return arg1 * arg2
+    # Multiply two numbers and returns product
+    def multiply(self, arg1, arg2):
+        return round(arg1 * arg2, 4)
 
     def test(self, phrase):
         print("Test Multi", phrase)
