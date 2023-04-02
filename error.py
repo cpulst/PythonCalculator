@@ -20,6 +20,16 @@ class Error():
         pass
 
     # Switcher, figures out what type of error and calls custom
+        """
+        except ZeroDivisionError:
+            print("ZeroDivisionError occured, cannot divide by zero")
+        except IndexError:
+            print("List index out of range")
+        except SyntaxError:
+            print("Syntax error occured")
+        except TypeError:
+            print("Invalid arguments given")       
+        """
         
     # Prints error to console
     def throwError(self, error, errorCode=0, message=""):
