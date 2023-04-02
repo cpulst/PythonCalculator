@@ -34,13 +34,13 @@ from modules.db.database import *
 def main():
     print("hello world!")
     addTest = Addition()
-    addTest.test("I fucking work!")
+    addTest.test("I work!")
     
     divideTest = Divide()
     divideTest.test("I going to divide by zero if it kills me")
     
     error = Error("Error")
-    error.throwError("test", 1, "Fuck me")
+    error.throwError("test", 1, "This one failed")
     
     power = Power()
     power.test("Hello Chris")

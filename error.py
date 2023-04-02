@@ -10,7 +10,7 @@
 ## and human readable test to console, informs user if necessary
 ##
 
-## NH: I think there is a way to use and extend the built in error handling, that would be a better way of implementing your own
+## I think there is a way to use and extend the built in error handling, that would be a better way
 
 
 # Error class

@@ -40,6 +40,9 @@ class DBConnect:
     def close(self):
         self.con.close()
     
+    def test(self, phrase):
+        print("Test this!", phrase)
+        return
     
 newDB = DBConnect()
 newDB.connect()
