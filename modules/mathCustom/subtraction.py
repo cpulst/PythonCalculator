@@ -17,7 +17,7 @@ class Subtraction:
 
     # Subtracts two numbers and returns the difference
     def subtract(self, arg1, arg2):
-        return round(arg1 - arg2, 4)
+        return round(int(arg1) - int(arg2), 4)
 
     def test(self, phrase):
         print("Test subtraction", phrase)

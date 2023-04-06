@@ -22,12 +22,13 @@
 ## 
 
 # Imports
-from modules.math.addition import *
-from modules.math.divide import *
+
+from modules.mathCustom.divide import *
 from error import *
-from modules.math.power import *
-from modules.math.multiply import *
-from modules.math.subtraction import *
+from modules.mathCustom.power import *
+from modules.mathCustom.multiply import *
+from modules.mathCustom.subtraction import *
+from modules.mathCustom.addition import *
 from modules.db.database import *
 
 # Main function

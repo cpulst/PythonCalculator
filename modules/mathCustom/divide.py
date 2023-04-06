@@ -18,7 +18,7 @@ class Divide:
     # Divides two numbers and returns division
     def divide(self, arg1, arg2):
         if(arg2 != 0):
-            return round(arg1 / arg2, 4)
+            return round(int(arg1) / int(arg2), 4)
         else:
             return 0
 

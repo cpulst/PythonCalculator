@@ -9,8 +9,26 @@
 ## Create GUI module. Creates a gui interface and binds button actions
 ##
 
+
+#import sys
+#import os
+
+#projectRoot = os.path.abspath(os.curdir)
+#sys.path.append(projectRoot + "\\modules\\mathCustom")
+#print(sys.path)
+
 import tkinter as tk
-#from guiEventHandler import *
+
+
+import sys
+import os
+
+current = os.path.dirname(os.path.realpath(__file__)) 
+parent = os.path.dirname(current)
+sys.path.append(parent)
+
+from mathCustom import *
+
 
 # Power class
 class CreateGui:
@@ -54,10 +72,6 @@ class CreateGui:
         # Create buttons
         for index, button in enumerate(self.btns):
             text = button
-            
-            # convert int to strings
-            if type(button) == int:
-                text = str(button)
             
             # handle 0 key, =, and history state keys
             if button == 0:
@@ -128,37 +142,56 @@ class CreateGui:
         self.textbox["text"] = val
         
     
+    def calculateResult(self):
+        if self.operator == "+":
+            add = addition.Addition()
+            return add.add(self.num1, self.num2)
+        if self.operator == "-":
+            subtract = subtraction.Subtraction()
+            return subtract.subtract(self.num1, self.num2)
+        if self.operator == "/":
+            quotient = divide.Divide()
+            return quotient.divide(self.num1,self.num2)
+        if self.operator == "*":
+            product = multiply.Multiply()
+            return product.multiply(self.num1, self.num2)
+        if self.operator == "^":
+            exponent = power.Power()
+            exponent.power(self.num1, self.num2)
+        else:
+            return "Error"
 
     # Button Press Handler
     def buttonPress(self, val):
         
         # Catch numerical input
-        if 0 <= int(val) <= 9:
+        if isinstance(val,int) and 0 <= val <= 9:
             # Convert to string for concatination
             val = str(val)
-            #self.update = UIUpdate(root)
-            #self.update.addNumber(self,val)
-            self.addNumber(val)
+            
             
             # set num1 variable for first time
             if self.num1 == None:
                 self.num1 = val
-                
+                self.addNumber(self.num1)
                 return
             
             # concat num1 if value exists
             if self.num1 != None and self.operator == None:
                 self.num1 = self.num1 + val
+                self.addNumber(self.num1)
                 return
             
             # set num2 value for first time if operator has been pressed
             if self.num2 == None and self.operator != None:
                 self.num2 = val
+                self.addNumber(self.num2)
                 return
             
             # concat num2 value if num2 value and operator value exist
             if self.num2 != None and self.operator != None:
                 self.num2 = self.num2 + val
+                self.addNumber(self.num2)
                 return
         
         # Catch operator input
@@ -167,17 +200,21 @@ class CreateGui:
             # set operator value for first time
             if self.operator == None:
                 self.operator = val
+                self.addNumber(self.operator)
                 return
             
             # calculate result and log equation if second operator is pressed and num2 val exists
             if self.operator != None and self.num2 != None:
+                
                 print("Here goes call to calculate result")
+                self.addNumber(self.operator)
                 # Calculate the result of the operation, log database, update user of result, store answer in num1, return num2 to None
                 return
 
             # Error catching for two operators pressed in a row, alternatively, could replace operator allowing user to change selected operation
             if self.operator != None and self.num2 == None:
                 print("error, second value must be entered before another operator can be used")
+                self.addNumber(self.operator)
                 return
             
         # Catch equals input
@@ -188,7 +225,8 @@ class CreateGui:
 
                 # Calc result, store answer, send equation and result to db
                 print("Calculate the result of the equation")
-                
+                self.result = self.calculateResult()
+                self.addNumber(self.result)                
             return
         
         # Catch history state up input
@@ -209,14 +247,33 @@ class CreateGui:
             return
 
         # Catch clear current value input
-        if val == "clear":
+        if val == "c":
             # validat if num2, operator, or num1 was last change (check for None)
             # return the last changed variable to None
+            if self.num1 != None:
+                if self.operator != None:
+                    if self.num2 != None:
+                        self.num2 = None
+                        self.addNumber(0)
+                    else:
+                        self.operator = None
+                        self.addNumber(0)
+                else:
+                    self.num1 = None
+                    self.addNumber(0)
+            else:
+                self.addNumber(0)
             print("Clear current")
             return
         
         # Catch reset all input
         if val == "reset":
+            self.result = None
+            self.num1 = None
+            self.num2 = None
+            self.operator = None
+            self.rowId = None
+            self.addNumber(0) 
             # Call DB, remove all entries
             # reset num1, num2, operator, result, rowId to None
             # Update UI to default state

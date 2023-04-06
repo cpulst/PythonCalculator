@@ -21,7 +21,7 @@ class Power:
 
     # Calculate power
     def power(self, number, exp):
-        return round(pow(number, exp), 4)
+        return round(pow(int(number), int(exp)), 4)
     
     # Test
     def test(self, message):
