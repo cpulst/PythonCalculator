@@ -24,7 +24,7 @@
 # Imports
 
 from modules.mathCustom.divide import *
-from error import *
+from modules.error import *
 from modules.mathCustom.power import *
 from modules.mathCustom.multiply import *
 from modules.mathCustom.subtraction import *
