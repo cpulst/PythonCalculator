@@ -9,26 +9,17 @@
 ## Create GUI module. Creates a gui interface and binds button actions
 ##
 
-
-#import sys
-#import os
-
-#projectRoot = os.path.abspath(os.curdir)
-#sys.path.append(projectRoot + "\\modules\\mathCustom")
-#print(sys.path)
-
 import tkinter as tk
-
-
 import sys
 import os
 
 current = os.path.dirname(os.path.realpath(__file__)) 
 parent = os.path.dirname(current)
+
 sys.path.append(parent)
 
 from mathCustom import *
-
+from db import database
 
 # Power class
 class CreateGui:
@@ -51,7 +42,7 @@ class CreateGui:
         # Button values
         self.btnSize = (50,50)
         self.btns = [0,1,2,3,4,5,6,7,8,9]
-        self.operators = ["c","reset","+","-","*","^","="]
+        self.operators = ["c","reset","+","-","*", "/", "^","="]
 
         #Event Variables
         self.num1 = None
@@ -81,8 +72,12 @@ class CreateGui:
                 item.place(x=0, y=(self.btnSize[1] * 4), width=self.btnSize[0]*3, height=self.btnSize[1])
                 
                 # create equals key
+                optBtn1 = tk.Button(self.root, text=self.operators[-2], bd=0, bg=self.btnAccent, command=lambda val=self.operators[-2]:self.buttonPress(val))
+                optBtn1.place(x=0 + (self.btnSize[0] * 3), y=0 + (self.btnSize[1] * 4), width=self.btnSize[0], height=self.btnSize[1])
+
+                # create equals key
                 optBtn1 = tk.Button(self.root, text=self.operators[-1], bd=0, bg=self.btnAccent, command=lambda val=self.operators[-1]:self.buttonPress(val))
-                optBtn1.place(x=0 + (self.btnSize[0] * 3), y=0 + (self.btnSize[1] * 4), width=self.btnSize[0] * 2, height=self.btnSize[1])
+                optBtn1.place(x=0 + (self.btnSize[0] * 4), y=0 + (self.btnSize[1] * 4), width=self.btnSize[0], height=self.btnSize[1])
 
                 # Create up history state key
                 historyBtnUp = tk.Button(self.root, text=u"\u21E7", bd=0, bg=self.btnAltColor, command=lambda val="up":self.buttonPress(val))
@@ -138,28 +133,41 @@ class CreateGui:
         return self.root
 
     # Add number to textbox given value
-    def addNumber(self, val):
+    def updateTextbox(self, val):
         self.textbox["text"] = val
         
     
     def calculateResult(self):
+        
         if self.operator == "+":
             add = addition.Addition()
-            return add.add(self.num1, self.num2)
+            self.result = add.add(self.num1, self.num2)
+        
         if self.operator == "-":
             subtract = subtraction.Subtraction()
-            return subtract.subtract(self.num1, self.num2)
+            self.result = subtract.subtract(self.num1, self.num2)
+        
         if self.operator == "/":
             quotient = divide.Divide()
-            return quotient.divide(self.num1,self.num2)
+            self.result = quotient.divide(self.num1,self.num2)
+        
         if self.operator == "*":
             product = multiply.Multiply()
-            return product.multiply(self.num1, self.num2)
+            self.result = product.multiply(self.num1, self.num2)
+        
         if self.operator == "^":
             exponent = power.Power()
-            exponent.power(self.num1, self.num2)
-        else:
-            return "Error"
+            self.result = exponent.power(self.num1, self.num2)
+        
+        # Create database entry
+        if self.result != None:
+            db = database.DBConnect()
+            db.connect()
+            db.createEntry(self.num1, self.operator, self.num2, self.result)
+            db.close()
+        
+        return
+            
 
     # Button Press Handler
     def buttonPress(self, val):
@@ -173,25 +181,25 @@ class CreateGui:
             # set num1 variable for first time
             if self.num1 == None:
                 self.num1 = val
-                self.addNumber(self.num1)
+                self.updateTextbox(self.num1)
                 return
             
             # concat num1 if value exists
             if self.num1 != None and self.operator == None:
                 self.num1 = self.num1 + val
-                self.addNumber(self.num1)
+                self.updateTextbox(self.num1)
                 return
             
             # set num2 value for first time if operator has been pressed
             if self.num2 == None and self.operator != None:
                 self.num2 = val
-                self.addNumber(self.num2)
+                self.updateTextbox(self.num2)
                 return
             
             # concat num2 value if num2 value and operator value exist
             if self.num2 != None and self.operator != None:
                 self.num2 = self.num2 + val
-                self.addNumber(self.num2)
+                self.updateTextbox(self.num2)
                 return
         
         # Catch operator input
@@ -200,21 +208,23 @@ class CreateGui:
             # set operator value for first time
             if self.operator == None:
                 self.operator = val
-                self.addNumber(self.operator)
+                self.updateTextbox(self.operator)
                 return
             
             # calculate result and log equation if second operator is pressed and num2 val exists
             if self.operator != None and self.num2 != None:
                 
-                print("Here goes call to calculate result")
-                self.addNumber(self.operator)
+                self.calculateResult()
+                self.num1 = self.result
+                self.operator = val
+                self.num2 = None
+                self.updateTextbox(self.operator)
                 # Calculate the result of the operation, log database, update user of result, store answer in num1, return num2 to None
                 return
 
             # Error catching for two operators pressed in a row, alternatively, could replace operator allowing user to change selected operation
             if self.operator != None and self.num2 == None:
-                print("error, second value must be entered before another operator can be used")
-                self.addNumber(self.operator)
+                self.updateTextbox("Invalid input")
                 return
             
         # Catch equals input
@@ -224,26 +234,83 @@ class CreateGui:
             if self.num1 != None and self.num2 != None:
 
                 # Calc result, store answer, send equation and result to db
-                print("Calculate the result of the equation")
-                self.result = self.calculateResult()
-                self.addNumber(self.result)                
+                self.calculateResult()
+                self.updateTextbox(self.result)
+                self.num1 = None
+                self.operator = None
+                self.num2 = None                
             return
         
         # Catch history state up input
         if val == "up":
-            # Will need to validate if the user is currently looking at history state
-            # if no - canvas DB, read last entry, construct string, present equation to user
-            # if yes - validate row is not first row, if yes, do nothing, if no decrement row id val
-            # call DB, read row values, construct string, present to user
-            print("call database, show next row up")
+
+            # Get data from database
+            db = database.DBConnect()
+            db.connect()
+            self.data = db.fetchData()
+            db.close()
+
+            if len(self.data) > 0:
+
+                if self.rowId == None:
+                    self.rowId = len(self.data) - 1
+                elif self.rowId == len(self.data) - 1:
+                    self.rowId = len(self.data) - 2
+
+                number1 = self.data[self.rowId][0]
+                number2 = self.data[self.rowId][2]
+                operator = self.data[self.rowId][1]
+                result = self.data[self.rowId][3]
+                equation = str(number1) + operator + str(number2) + "=" + str(result)
+
+                self.updateTextbox(equation)
+                
+                if self.rowId == 0:
+                    self.rowId = 0
+                else:
+                    self.rowId -= 1
+
+            else:
+                self.updateTextbox("No data")
+            
             return
 
         # Catch history state down input
         if val == "down":
-            # Will need to validate if the user is currently looking at history state
-            # if yes - validate row is not last row, if yes, do reset calculator to defaults, if no increment row id val
-            # call DB, read row values, construct string, present to user
-            print("call database, show next row down")
+
+            # Get database data
+            db = database.DBConnect()
+            db.connect()
+            self.data = db.fetchData()
+            db.close()
+
+            # Test if data exists
+            if len(self.data) > 0:
+                
+                # Establish initial row value
+                if self.rowId == None:
+                    self.rowId = 0
+                elif self.rowId == 0:
+                    self.rowId = 1
+                
+                # Get and format data
+                number1 = self.data[self.rowId][0]
+                number2 = self.data[self.rowId][2]
+                operator = self.data[self.rowId][1]
+                result = self.data[self.rowId][3]
+                equation = str(number1) + operator + str(number2) + "=" + str(result)
+
+                self.updateTextbox(equation)
+                
+                # Increment row value
+                if self.rowId == len(self.data) - 1:
+                    self.rowId = len(self.data) - 1
+                else:
+                    self.rowId += 1
+
+            else:
+                self.updateTextbox("No data")
+            
             return
 
         # Catch clear current value input
@@ -254,16 +321,17 @@ class CreateGui:
                 if self.operator != None:
                     if self.num2 != None:
                         self.num2 = None
-                        self.addNumber(0)
+                        self.updateTextbox(0)
                     else:
                         self.operator = None
-                        self.addNumber(0)
+                        self.updateTextbox(0)
                 else:
                     self.num1 = None
-                    self.addNumber(0)
+                    self.updateTextbox(0)
             else:
-                self.addNumber(0)
-            print("Clear current")
+                self.updateTextbox(0)
+            self.rowId = None
+            
             return
         
         # Catch reset all input
@@ -273,9 +341,12 @@ class CreateGui:
             self.num2 = None
             self.operator = None
             self.rowId = None
-            self.addNumber(0) 
-            # Call DB, remove all entries
-            # reset num1, num2, operator, result, rowId to None
-            # Update UI to default state
-            print("reset pressed")
+            self.updateTextbox(0) 
+            
+            # Database reset
+            db = database.DBConnect()
+            db.connect()
+            db.deleteTable()
+            db.close()
+
             return

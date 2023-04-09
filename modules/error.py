@@ -12,6 +12,17 @@
 
 ## I think there is a way to use and extend the built in error handling, that would be a better way
 
+#print(sys.path)
+
+class zeroDivison(Exception):
+    def __init__(self):
+        print("Halt! You violated the law...of mathmatics...")
+        
+
+class indexError(Exception):
+    def __init__(self):
+        print("Halt! You violated the law...of mathmatics...")
+        
 
 # Error class
 class Error():
@@ -31,9 +42,7 @@ class Error():
             print("Invalid arguments given")       
         """
         
-    # Prints error to console
-    def throwError(self, error, errorCode=0, message=""):
-        print("ERROR:", str(errorCode), message)
+    
     
     
     # Updates user with error message on UI
