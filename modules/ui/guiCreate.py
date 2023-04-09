@@ -127,6 +127,7 @@ class CreateGui:
         
         # Create buttons
         self.createButtons()
+        self.keyPress()
         
         # Initialize tkinter main loop
         self.root.mainloop()
@@ -136,25 +137,35 @@ class CreateGui:
     def updateTextbox(self, val):
         self.textbox["text"] = val
         
-    
+    # Process input and return results
     def calculateResult(self):
         
+        # Addition results
         if self.operator == "+":
             add = addition.Addition()
             self.result = add.add(self.num1, self.num2)
         
+        # Subtraction results
         if self.operator == "-":
             subtract = subtraction.Subtraction()
             self.result = subtract.subtract(self.num1, self.num2)
         
+        # Division results
         if self.operator == "/":
-            quotient = divide.Divide()
-            self.result = quotient.divide(self.num1,self.num2)
+            print(self.num2)
+            if int(self.num2) == 0:
+                self.updateTextbox("Division by zero")
+                raise ZeroDivisionError
+            else:
+                quotient = divide.Divide()
+                self.result = quotient.divide(self.num1,self.num2)
         
+        # Multiplication results
         if self.operator == "*":
             product = multiply.Multiply()
             self.result = product.multiply(self.num1, self.num2)
         
+        # Power results
         if self.operator == "^":
             exponent = power.Power()
             self.result = exponent.power(self.num1, self.num2)
@@ -167,7 +178,32 @@ class CreateGui:
             db.close()
         
         return
-            
+
+    def keyCapture(self,e):
+        vals = ["+","-","*","/","^"]
+
+        try:
+            self.buttonPress(int(e.keysym))
+        except:
+            if e.keysym == "Return":
+                self.buttonPress("=")
+            if e.keysym == "Delete":
+                self.buttonPress("reset")
+            if e.keysym == "BackSpace":
+                self.buttonPress("c")
+            if e.keysym == "Up":
+                self.buttonPress("up")
+            if e.keysym == "Down":
+                self.buttonPress("down")
+            if e.char in vals:
+                self.buttonPress(e.char)
+        return
+    
+    def keyPress(self):
+        self.root.bind('<Key>', lambda e: self.keyCapture(e))
+        return
+
+    
 
     # Button Press Handler
     def buttonPress(self, val):
@@ -249,7 +285,7 @@ class CreateGui:
             db.connect()
             self.data = db.fetchData()
             db.close()
-
+            
             if len(self.data) > 0:
 
                 if self.rowId == None:
@@ -290,8 +326,10 @@ class CreateGui:
                 # Establish initial row value
                 if self.rowId == None:
                     self.rowId = 0
-                elif self.rowId == 0:
+                if self.rowId == 0:
                     self.rowId = 1
+                if self.rowId > len(self.data)-1:
+                    self.rowId = len(self.data)-1
                 
                 # Get and format data
                 number1 = self.data[self.rowId][0]
@@ -303,7 +341,7 @@ class CreateGui:
                 self.updateTextbox(equation)
                 
                 # Increment row value
-                if self.rowId == len(self.data) - 1:
+                if self.rowId >= len(self.data) - 1:
                     self.rowId = len(self.data) - 1
                 else:
                     self.rowId += 1

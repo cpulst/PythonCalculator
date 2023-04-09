@@ -14,15 +14,6 @@
 
 #print(sys.path)
 
-class zeroDivison(Exception):
-    def __init__(self):
-        print("Halt! You violated the law...of mathmatics...")
-        
-
-class indexError(Exception):
-    def __init__(self):
-        print("Halt! You violated the law...of mathmatics...")
-        
 
 # Error class
 class Error():

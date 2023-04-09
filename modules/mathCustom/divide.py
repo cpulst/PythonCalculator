@@ -9,7 +9,6 @@
 ## Divide module, returns division of two arguments, returns 0 if division by zero.
 ##
 import sys
-import sys
 import os
 
 current = os.path.dirname(os.path.realpath(__file__)) 
@@ -32,7 +31,7 @@ class Divide:
         if(arg2 != 0):
             return round(int(arg1) / int(arg2), 4)
         else:
-            raise error.zeroDivison("Error: Division by zero")
+            raise ZeroDivisionError
 
     def test(self, phrase):
         print("Test Divide", phrase)
